@@ -1,0 +1,99 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: agent-service
+  profiles:
+    active: local
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+  data:
+    redis:
+      host: ${cyber.redis.host}
+      port: 6379
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.111.129:8848
+      config:
+        server-addr: 192.168.111.129:8848
+        file-extension: yaml
+
+langchain4j:
+  open-ai:
+    chat-model:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: ${DASHSCOPE_API_KEY}           # 环境变量
+      model-name: qwen-plus
+      temperature: 0.7
+      max-tokens: 1024
+      timeout: 30s
+      log-requests: true
+      log-responses: true
+    streaming-chat-model:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: ${DASHSCOPE_API_KEY}
+      model-name: qwen3.6-plus
+      temperature: 0.7
+      max-tokens: 1024
+      log-requests: true
+      log-responses: true
+    embedding-model:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: ${DASHSCOPE_API_KEY}
+      model-name: text-embedding-v4
+      log-requests: true
+      log-responses: true
+      max-segments-per-batch: 10
+
+
+# 日志输出
+logging:
+  level:
+    com.heima: debug
+    dev.langchain4j: debug
+  pattern:
+    dateformat: HH:mm:ss:SSS
+  file:
+    path: "logs/${spring.application.name}"
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler # 配置枚举处理器
+  global-config:
+    db-config:
+      id-type: ASSIGN_ID          # 使用雪花算法
+
+# Sentinel 控制台
+spring.cloud.sentinel:
+  transport:
+    dashboard: 192.168.111.129:8080
+  datasource:
+    flow:
+      nacos:
+        server-addr: 192.168.111.129:8848
+        data-id: ${spring.application.name}-flow-rules
+        rule-type: flow
+
+# Knife4j
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+knife4j:
+  enable: true
+  openapi:
+    title: AI翻译接口文档
+    description: "AI翻译接口文档"
+    group:
+      default:
+        group-name: default
+        api-rule: package
+        api-rule-resources:
+          - com.heima.agent.controller
+
+

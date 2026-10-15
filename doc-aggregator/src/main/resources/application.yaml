@@ -1,0 +1,34 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: doc-aggregator
+
+# Knife4j 配置
+knife4j:
+  enable: true
+
+# Springdoc 配置：聚合多个服务的 OpenAPI 文档
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    # 多服务分组下拉
+    urls:
+      - name: 认证服务
+        url: /openapi/auth-service
+      - name: 宠物服务
+        url: /openapi/pet-service
+      - name: 商品服务
+        url: /openapi/shop-service
+      - name: 社交服务
+        url: /openapi/social-service
+      - name: 分析服务
+        url: /openapi/analytics-service
+      - name: AI翻译
+        url: /openapi/agent-service
+
+# 日志
+logging:
+  level:
+    com.heima.doc: debug

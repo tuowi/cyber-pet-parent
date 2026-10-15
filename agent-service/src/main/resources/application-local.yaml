@@ -1,0 +1,7 @@
+cyber:
+  db:
+    host: 192.168.111.129 # 修改为你自己的虚拟机IP地址
+    pw: 123 # 修改为docker中的MySQL密码
+
+  redis:
+    host: localhost

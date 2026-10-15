@@ -1,0 +1,88 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.111.129:8848
+    #        register-enabled: false   # 网关不需要注册到 Nacos，只需发现其他服务
+    gateway:
+      routes:
+        # ==================== 用户认证服务 ====================
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**,/avatars/auth/**
+
+        # ==================== 宠物服务 ====================
+        - id: pet-service
+          uri: lb://pet-service
+          predicates:
+            - Path=/pet/pet-info/**,/pet/state-transition-log/**,/pet/upload/avatar,/avatars/pet/**
+
+        - id: shop-service
+          uri: lb://shop-service
+          predicates:
+            - Path=/shop/**
+
+        - id: social-service
+          uri: lb://social-service
+          predicates:
+            - Path=/social/**
+
+        - id: analytics-service
+          uri: lb://analytics-service
+          predicates:
+            - Path=/analytics/**
+
+        - id: agent-service
+          uri: lb://agent-service
+          predicates:
+            - Path=/agent/**
+
+
+        # ==================== 后续阶段服务（暂时注释，开发到对应 Phase 再放开） ====================
+        #
+        # - id: agent-service
+        #   uri: lb://agent-service
+        #   predicates:
+        #     - Path=/api/agent/**
+        #
+        # - id: analytics-service
+        #   uri: lb://analytics-service
+        #   predicates:
+        #     - Path=/api/analytics/**
+
+# JWT 配置（与 common-util 中 JwtUtils 保持一致）
+jwt:
+  secret: cyber-pet-default-secret-key-min-256bits!!
+
+# 日志
+logging:
+  level:
+    com.heima.gateway: debug
+  pattern:
+    dateformat: HH:mm:ss:SSS
+
+cyber:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    secret-key: itcast1234567890itcast1234567890
+    # 设置jwt过期时间（2小时）
+    token-TTL: 7200000
+    # 设置前端传递过来的令牌名称
+    token-name: Authentication
+  auth:
+    excludePaths:
+      - /auth/login
+      - /auth/register
+      - /avatars/**
+      - /doc.html
+      - /webjars
+      - /v3/api-docs
+      - /swagger-resources
+      - /favicon.ico
+
