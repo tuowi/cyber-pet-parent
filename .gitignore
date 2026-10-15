@@ -1,0 +1,14 @@
+# ===== Java =====
+*.class
+*.jar
+*.war
+target/
+build/
+.gradle/
+*.iml
+.idea/
+
+# ===== 通用 =====
+.DS_Store
+*.log
+.env
